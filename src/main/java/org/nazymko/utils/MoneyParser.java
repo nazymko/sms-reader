@@ -1,5 +1,8 @@
 package org.nazymko.utils;
 
+import org.nazymko.History;
+import org.nazymko.Money;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -86,6 +89,19 @@ public class MoneyParser {
 
     public static String format(Long value, String currency) {
         String valueString = value.toString();
-        return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
+        if (valueString.length() > 2) {
+            return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
+        } else {
+            if (valueString.length() == 0) {
+                return "0.00 " + currency;
+            } else {
+                return (double) (value / 100) + " " + currency;
+            }
+
+        }
+    }
+
+    public static Money byType(Money.Type type, History history) {
+        return history.getMeta().getMoneys().stream().filter(x -> type.equals(x.getType())).findFirst().orElse(null);
     }
 }

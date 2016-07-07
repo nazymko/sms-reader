@@ -1,6 +1,5 @@
 package org.nazymko;
 
-import org.jetbrains.annotations.NotNull;
 import org.nazymko.stategy.BalanceIsBiggestValueStrategy;
 import org.nazymko.stategy.BillIsSmallestValueStrategy;
 import org.nazymko.stategy.CurrencyMoneyStrategy;
@@ -8,6 +7,7 @@ import org.nazymko.stategy.Strategy;
 import org.nazymko.utils.MoneyParser;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
@@ -34,12 +34,22 @@ public class Main {
         applyStrategies(histories, strategies);
         analise(histories, step);
         print(histories);
+        balance(histories);
+
 
         return null;
 
     }
 
-    @NotNull
+    private static void balance(List<History> histories) {
+        for (History history : histories) {
+            Money money = MoneyParser.byType(Money.Type.BALANCE, history);
+            String moneyWithCurrency = MoneyParser.format(money.getValue(), "");
+            String date = history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            System.out.println("[\"" + date + "\"," + moneyWithCurrency + "]");
+        }
+    }
+
     private static List<History> convertIntoHistory(List<Sms> slsList) {
         List<History> histories = new ArrayList<>();
         for (Sms sms : slsList) {
@@ -167,7 +177,7 @@ public class Main {
 
 
     private static void info(Money _current) {
-        System.out.println("\t" + _current.getType() + " :\t" + MoneyParser.format(_current.getValue(), _current.getCurrency()));
+        System.out.println("\t" + _current.getType() + "\t:\t" + MoneyParser.format(_current.getValue(), _current.getCurrency()));
     }
 
     private static long interest(Long prev_money_2, double interest) {
