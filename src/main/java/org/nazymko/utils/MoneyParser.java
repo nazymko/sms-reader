@@ -66,4 +66,26 @@ public class MoneyParser {
         }
         return false;
     }
+
+    public static boolean isOperationComponents(long lastBalance, long currentBalance, long operationValue, double operationInterest, String currency) {
+        if (_isOperationBalance(lastBalance, currentBalance, operationValue, operationInterest)) {
+            System.out.println("lastBalance = [" + format(lastBalance, currency) + "], currentBalance = [" + format(currentBalance, currency) + "], operationValue = [" + format(operationValue, currency) + "]");
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean _isOperationBalance(long lastBalance, long currentBalance, long operationValue, double operationInterest) {
+        if (Math.abs(lastBalance - operationValue) <= (currentBalance + (operationValue * operationInterest)) ||
+                Math.abs(lastBalance + operationValue) >= (currentBalance + (operationValue * operationInterest))
+                ) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String format(Long value, String currency) {
+        String valueString = value.toString();
+        return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
+    }
 }

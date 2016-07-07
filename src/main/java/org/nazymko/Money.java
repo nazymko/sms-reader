@@ -6,7 +6,7 @@ package org.nazymko;
 public class Money {
     private String currency;
     private Long value;
-    private Type type;
+    private Type type = Type.UNKNOWN;
 
     private Money() {
 
@@ -19,6 +19,10 @@ public class Money {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     @Override
@@ -38,8 +42,8 @@ public class Money {
         return value;
     }
 
-    enum Type {
-        BALANCE, CHANGE
+    public enum Type {
+        BALANCE, BILL, UNKNOWN
     }
 
 }

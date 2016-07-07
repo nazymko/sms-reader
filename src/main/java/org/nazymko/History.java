@@ -1,6 +1,7 @@
 package org.nazymko;
 
 import org.nazymko.utils.CurrencyRegistry;
+import org.nazymko.utils.DateParser;
 import org.nazymko.utils.MoneyParser;
 
 import java.time.LocalDateTime;
@@ -10,18 +11,14 @@ import java.util.List;
  * Created by Andrew Nazymko
  */
 public class History {
-    public String getSms() {
-        return sms;
-    }
-
     private String sms;
     private LocalDateTime deviceDate;
-
-    public LocalDateTime getDeviceDate() {
-        return deviceDate;
-    }
-
     private Meta meta = new Meta();
+    private LocalDateTime smsDate;
+
+    public LocalDateTime getSmsDate() {
+        return smsDate;
+    }
 
     public History(String sms, LocalDateTime time) {
         this.sms = sms;
@@ -32,8 +29,11 @@ public class History {
         return of(sms.getText(), sms.getTime());
     }
 
-    public static History of(String sms, LocalDateTime time) {
-        History history = new History(sms, time);
+    public static History of(String sms, LocalDateTime deviceTime) {
+        History history = new History(sms, deviceTime);
+        if (DateParser.hasDate(sms)) {
+            history.setSmsDate(DateParser.parse(sms));
+        }
         for (String text : sms.split(" ")) {
             if (CurrencyRegistry.isCurrency(text)) {
                 history.setCurrency(text);
@@ -43,6 +43,14 @@ public class History {
             }
         }
         return history;
+    }
+
+    public String getSms() {
+        return sms;
+    }
+
+    public LocalDateTime getDeviceDate() {
+        return deviceDate;
     }
 
     public Meta getMeta() {
@@ -75,11 +83,15 @@ public class History {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("History{");
-        sb.append("sms='").append(sms).append('\'');
-        sb.append(", deviceDate=").append(deviceDate);
-        sb.append(", meta=").append(meta);
-        sb.append('}');
-        return sb.toString();
+        return "History{" +
+                "sms='" + sms + '\'' +
+                ", deviceDate=" + deviceDate +
+                ", meta=" + meta +
+                ", smsDate=" + smsDate +
+                '}';
+    }
+
+    public void setSmsDate(LocalDateTime smsDate) {
+        this.smsDate = smsDate;
     }
 }

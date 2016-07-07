@@ -1,5 +1,8 @@
 package org.nazymko;
 
+import org.jetbrains.annotations.NotNull;
+import org.nazymko.stategy.BalanceIsBiggestValueStrategy;
+import org.nazymko.stategy.BillIsSmallestValueStrategy;
 import org.nazymko.stategy.CurrencyMoneyStrategy;
 import org.nazymko.stategy.Strategy;
 import org.nazymko.utils.MoneyParser;
@@ -9,36 +12,57 @@ import java.util.*;
 
 public class Main {
 
-    public static final int ACCURACY = 100;
     public static final double INTEREST = 0.07;
-    private static List<Strategy> strategies = Arrays.asList(new CurrencyMoneyStrategy());
+    private static List<Strategy> strategies = Arrays.asList(
+            new CurrencyMoneyStrategy(),
+            new BalanceIsBiggestValueStrategy(),
+            new BillIsSmallestValueStrategy()
+    );
 
     public static void main(String[] args) throws IOException {
 
-        read("sms.log", 2);
-        read("sms.log", 3);
-        read("sms.log", 4);
-
-
+        read("sms.log", 1);
     }
 
     public static List<Change> read(String file, int step) throws IOException {
         List<Sms> slsList = new SmsReader().open(file);
-        Collections.sort(slsList, (first, second) -> first.time.isEqual(second.time) ? 0 : first.time.isBefore(second.time) ? -1 : 1);
 
+        List<History> histories = convertIntoHistory(slsList);
+
+        sortByTime(histories);
+        cleanUpDigits(histories, 0.5);
+        applyStrategies(histories, strategies);
+        analise(histories, step);
+        print(histories);
+
+        return null;
+
+    }
+
+    @NotNull
+    private static List<History> convertIntoHistory(List<Sms> slsList) {
         List<History> histories = new ArrayList<>();
         for (Sms sms : slsList) {
             histories.add(History.of(sms));
         }
+        return histories;
+    }
 
-        cleanUpDigits(histories, 0.5);
-        analise(histories, step);
-        System.out.println();
-        print(histories);
-        System.out.println();
+    private static void applyStrategies(List<History> histories, List<Strategy> strategies) {
+        strategies.stream().forEach(strategy -> histories.stream().forEach(strategy::apply));
+    }
 
-        return null;
+    private static void sortByTime(List<History> histories) {
+        Collections.sort(histories, (first, second) -> first.getSmsDate().isEqual(second.getSmsDate()) ? 0 : first.getSmsDate().isBefore(second.getSmsDate()) ? -1 : 1);
+    }
 
+    private static List<History> removeDuplicatesByMoney(List<History> histories) {
+        HashMap<List<Money>, History> container = new HashMap<>();
+        for (History history : histories) {
+            container.put(history.getMeta().getMoneys(), history);
+        }
+
+        return new ArrayList<>(container.values());
     }
 
     private static void print(List<?> histories) {
@@ -56,11 +80,9 @@ public class Main {
         }
         int limit = (int) (histories.size() * threshold);
 
-        for (Map.Entry<Long, Long> entry : counter.entrySet()) {
-            if (entry.getValue() > limit) {
-                removeDigit(histories, entry.getKey());
-            }
-        }
+        counter.entrySet().stream().filter(entry -> entry.getValue() > limit).forEach(entry -> {
+            removeDigit(histories, entry.getKey());
+        });
 
     }
 
@@ -70,23 +92,19 @@ public class Main {
         }
     }
 
-    private static List<Change> analise(List<History> histories, int step) {
-        System.out.println("step = [" + step + "]");
+    private static List<Change> analise(List<History> histories, int stepBack) {
+        System.out.println("step = [" + stepBack + "]");
         System.out.println("----------------------");
         List<Change> changes = new ArrayList<>();
-        int index = 0;
-        for (int i = 0; i < histories.size(); i++) {
+        for (int index = 0; index < histories.size(); index++) {
             History prev;
             History current;
 
-            current = histories.get(i);
-            if (i <= step - 1) {//skip first
-                strategies.stream().forEach(x -> x.apply(current));
+            if (index <= stepBack) {//skip first
                 continue;
             }
-            strategies.stream().forEach(x -> x.apply(current));
-
-            prev = histories.get(step - 1);
+            current = histories.get(index);
+            prev = histories.get(index - stepBack);
 
             List<Money> prevMoney = prev.getMeta().getMoneys();
             List<Money> currentMoney = current.getMeta().getMoneys();
@@ -102,21 +120,28 @@ public class Main {
                             continue;
                         }
 
-                        if (MoneyParser.inRange(_current.getValue(), _prev.getValue(), interest(_prev_money_2.getValue(), INTEREST))) {
-                            System.out.println("We found something: " +
-                                    format(_current.getValue(), _current.getCurrency()) + " and \n\t" +
-                                    format(_prev.getValue(), _prev.getCurrency()) + "\n\t" +
-                                    format(_prev_money_2.getValue(), _prev_money_2.getCurrency()) + "\n\t"
+//                      _prev - probably it is the operation
+//                      _current - current amount of money
+                        if (_current.getType().equals(Money.Type.BALANCE)) {
+                            if (MoneyParser.isOperationComponents(_prev.getValue(), _current.getValue(), _prev_money_2.getValue(), INTEREST, current.getCurrency())) {
+                                System.out.println(current);
+                                System.out.println(prev);
+                                System.out.println("CURRENT");
+                                info(_current);
+                                System.out.println("PREVIOUS:");
+                                info(_prev_money_2);
+                                info(_prev);
 
-                            );
+                                if (Money.Type.BALANCE.equals(_current.getType())) {
+                                    System.out.println("\tINTEREST:\t" + MoneyParser.format(
+                                            bankInterest(_current, find(Money.Type.BALANCE, _prev_money_2, _prev), find(Money.Type.BILL, _prev_money_2, _prev)),
+                                            current.getCurrency()));
+                                }
 
-                            System.out.println(current);
-                            System.out.println(prev);
-                            System.out.println();
-                            System.out.println();
-                            System.out.println();
+                                System.out.println();
+                            }
+
                         }
-
                     }
                 }
             }
@@ -126,9 +151,23 @@ public class Main {
         return changes;
     }
 
-    private static String format(Long value, String currency) {
-        String valueString = value.toString();
-        return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
+    private static Long bankInterest(Money currentBalance, Money prevBalance, Money prevBill) {
+        return Math.abs(Math.abs(currentBalance.getValue() - prevBalance.getValue()) - Math.abs(prevBill.getValue()));
+    }
+
+
+    private static Money find(Money.Type type, Money... moneys) {
+        for (Money money : moneys) {
+            if (type.equals(money.getType())) {
+                return money;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Type %s not found in given list", type));
+    }
+
+
+    private static void info(Money _current) {
+        System.out.println("\t" + _current.getType() + " :\t" + MoneyParser.format(_current.getValue(), _current.getCurrency()));
     }
 
     private static long interest(Long prev_money_2, double interest) {
