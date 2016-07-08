@@ -13,6 +13,10 @@ public class CurrencyMoneyStrategy implements Strategy<History> {
         String currency = target.getCurrency();
         String[] words = target.getSms().split(" ");
 
+        if (!isSupportable(target)) {
+            return;
+        }
+
         int index, start = 0;
         while ((index = currencyIndex(currency, words, start)) > 0) {
             if (index > 0 && MoneyParser.isDigits(words[index - 1])) {
@@ -21,6 +25,10 @@ public class CurrencyMoneyStrategy implements Strategy<History> {
             start = index + 1;
         }
 
+    }
+
+    private boolean isSupportable(History target) {
+        return target.getCurrency() != null;
     }
 
     //can be more than one currency

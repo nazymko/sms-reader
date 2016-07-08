@@ -1,9 +1,6 @@
 package org.nazymko;
 
-import org.nazymko.stategy.BalanceIsBiggestValueStrategy;
-import org.nazymko.stategy.BillIsSmallestValueStrategy;
-import org.nazymko.stategy.CurrencyMoneyStrategy;
-import org.nazymko.stategy.Strategy;
+import org.nazymko.stategy.*;
 import org.nazymko.utils.MoneyParser;
 
 import java.io.IOException;
@@ -19,19 +16,22 @@ public class Main {
             new BillIsSmallestValueStrategy()
     );
 
+    private static List<BulkStrategy> bulkStrategies = Arrays.asList(
+            new TwoMoneyRequiredFilter()
+    );
+
     public static void main(String[] args) throws IOException {
 
         read("sms.log", 1);
     }
 
     public static List<Change> read(String file, int step) throws IOException {
-        List<Sms> slsList = new SmsReader().open(file);
-
-        List<History> histories = convertIntoHistory(slsList);
+        List<History> histories = HistoryConverter.convertIntoHistory(new SmsReader().open(/*file*/));
 
         sortByTime(histories);
         cleanUpDigits(histories, 0.5);
-        applyStrategies(histories, strategies);
+        applySingleStrategy(histories, strategies);
+        applyBulkStrategy(histories, bulkStrategies);
         analise(histories, step);
         print(histories);
         balance(histories);
@@ -43,27 +43,43 @@ public class Main {
 
     private static void balance(List<History> histories) {
         for (History history : histories) {
-            Money money = MoneyParser.byType(Money.Type.BALANCE, history);
-            String moneyWithCurrency = MoneyParser.format(money.getValue(), "");
+            Money balance = MoneyParser.byType(Money.Type.BALANCE, history);
+            Money bill = MoneyParser.byType(Money.Type.BILL, history);
+            if (balance == null || bill == null) {
+                System.out.println("bill = " + bill);
+                System.out.println("balance = " + balance);
+                continue;
+            }
+
+            String balanceCurrency = MoneyParser.format(balance.getValue(), "");
+            String billMoney = MoneyParser.format(bill.getValue(), "");
             String date = history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            System.out.println("[\"" + date + "\"," + moneyWithCurrency + "]");
+            System.out.println(String.format("[\"%s\", %5s, %5s],", date, balanceCurrency, billMoney));
         }
     }
 
-    private static List<History> convertIntoHistory(List<Sms> slsList) {
-        List<History> histories = new ArrayList<>();
-        for (Sms sms : slsList) {
-            histories.add(History.of(sms));
-        }
-        return histories;
-    }
 
-    private static void applyStrategies(List<History> histories, List<Strategy> strategies) {
+    private static void applySingleStrategy(List<History> histories, List<Strategy> strategies) {
         strategies.stream().forEach(strategy -> histories.stream().forEach(strategy::apply));
     }
 
+    private static void applyBulkStrategy(List<History> histories, List<BulkStrategy> strategies) {
+        strategies.stream().forEach(stat -> stat.apply(histories));
+    }
+
     private static void sortByTime(List<History> histories) {
-        Collections.sort(histories, (first, second) -> first.getSmsDate().isEqual(second.getSmsDate()) ? 0 : first.getSmsDate().isBefore(second.getSmsDate()) ? -1 : 1);
+        Collections.sort(histories, (first, second) -> {
+            if (first.getSmsDate() == null && second.getSmsDate() == null) {
+                return 0;
+            }
+            if (first.getSmsDate() == null) {
+                return -1;
+            }
+            if (second.getSmsDate() == null) {
+                return 1;
+            }
+            return first.getSmsDate().isEqual(second.getSmsDate()) ? 0 : (first.getSmsDate().isBefore(second.getSmsDate()) ? -1 : 1);
+        });
     }
 
     private static List<History> removeDuplicatesByMoney(List<History> histories) {
