@@ -13,8 +13,17 @@ public class Meta {
     private Long balance;
     private Operation operation;
     private Long change;
+    private State state;
 
-    public long getChange() {
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public Long getChange() {
         return change;
     }
 
@@ -72,5 +81,9 @@ public class Meta {
                 ", operation=" + operation +
                 ", change=" + change +
                 '}';
+    }
+
+    public void addMoney(List<Money> moneys) {
+        this.moneys.addAll(moneys);
     }
 }

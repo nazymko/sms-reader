@@ -3,7 +3,9 @@ package org.nazymko.utils;
 import org.nazymko.History;
 import org.nazymko.Money;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -102,6 +104,27 @@ public class MoneyParser {
     }
 
     public static Money byType(Money.Type type, History history) {
-        return history.getMeta().getMoneys().stream().filter(x -> type.equals(x.getType())).findFirst().orElse(null);
+        return _byType(type, history.getMeta().getMoneys());
+    }
+
+    private static Money _byType(Money.Type type, List<Money> moneys) {
+        return moneys.stream().filter(x -> type.equals(x.getType())).findFirst().orElse(null);
+    }
+
+    public static List<Money> sum(List<Money> source1, List<Money> source2) {
+        List<Money> newMoney = new ArrayList<>();
+
+        for (Money money : source1) {
+            Money money1 = _byType(money.getType(), source2);
+            if (money1 == null) {
+                continue;
+            }
+            if (!Objects.equals(money.getCurrency(), money1.getCurrency())) {
+                throw new IllegalArgumentException(money.getCurrency() + " and  " + money1.getCurrency() + " is not the same");
+            }
+            newMoney.add(new Money(money.getCurrency(), money.getValue() + money1.getValue()));
+        }
+
+        return newMoney;
     }
 }

@@ -16,7 +16,7 @@ public class BillIsSmallestValueStrategy implements Strategy<History> {
         }
         Optional<Money> max = mutableTarget.getMeta().getMoneys().stream().min((o1, o2) -> o1.getValue().compareTo(o2.getValue()));
         if (max.isPresent()) {
-            max.get().setType(Money.Type.BILL);
+            max.get().setType(Money.Type.TRANSACTION);
         }
     }
 }

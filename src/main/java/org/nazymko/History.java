@@ -5,24 +5,29 @@ import org.nazymko.utils.DateParser;
 import org.nazymko.utils.MoneyParser;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Andrew Nazymko
  */
 public class History {
+    private List<History> related = new ArrayList<>();
+    private List<History> dependencies = new ArrayList<>();
     private String sms;
     private LocalDateTime deviceDate;
     private Meta meta = new Meta();
     private LocalDateTime smsDate;
 
-    public LocalDateTime getSmsDate() {
-        return smsDate;
-    }
-
     public History(String sms, LocalDateTime time) {
         this.sms = sms;
         this.deviceDate = time;
+    }
+
+    public static History empty(LocalDateTime smsDate) {
+        History history = new History("null", null);
+        history.setSmsDate(smsDate);
+        return history;
     }
 
     public static History of(Sms sms) {
@@ -43,6 +48,30 @@ public class History {
             }
         }
         return history;
+    }
+
+    public List<History> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(History dependencies) {
+        this.dependencies.add(dependencies);
+    }
+
+    public List<History> getRelated() {
+        return related;
+    }
+
+    public void setRelated(History related) {
+        this.related.add(related);
+    }
+
+    public LocalDateTime getSmsDate() {
+        return smsDate;
+    }
+
+    public void setSmsDate(LocalDateTime smsDate) {
+        this.smsDate = smsDate;
     }
 
     public String getSms() {
@@ -89,9 +118,5 @@ public class History {
                 ", meta=" + meta +
                 ", smsDate=" + smsDate +
                 '}';
-    }
-
-    public void setSmsDate(LocalDateTime smsDate) {
-        this.smsDate = smsDate;
     }
 }
