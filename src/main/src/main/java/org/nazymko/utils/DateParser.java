@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 public class DateParser {
 
     private static final String[][] TEMPLATES = {
-            {"\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy-MM-dd HH:mm:ss"},
+            {"\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy-MM-dd HH:mm:ss"},//2016-07-03 21:44:06
+            {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm"},//22.07.15 14:18
+            {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm:ss"}//22.07.15 14:18:ss
     };
     private static final DateTimeFormatter[] FORMATS = new DateTimeFormatter[TEMPLATES.length];
     private static final Pattern[] PATTERNS = new Pattern[TEMPLATES.length];

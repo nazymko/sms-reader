@@ -41,7 +41,7 @@ public class CurrencyMoneyStrategy implements Strategy<History> {
         }
 
         for (int index = offset; index < words.length; index++) {
-            if (currency.equals(words[index])) {
+            if (words[index].startsWith(currency)) {//
                 return index;
             }
         }

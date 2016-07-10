@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class MoneyParser {
 
     public static final int SCALE = 100;
-    private static final Pattern PATTERN = Pattern.compile("\\d*\\.{0,1}\\d{1,2}");
+    private static final Pattern PATTERN = Pattern.compile("\\-{0,1}\\d*\\.{0,1}\\d{1,2}");
 
     public static boolean isDigits(String text) {
         return PATTERN.matcher(text).matches();
@@ -22,8 +22,15 @@ public class MoneyParser {
     }
 
     public static Long normalize(String text) {
-        if (text.contains(".")) {
-            String[] strings = text.split("\\.");
+        String _word = text.trim();
+        if (_word.contains(".")) {
+            boolean negative = false;
+            if (_word.startsWith("-")) {
+                _word = _word.substring(1);
+                negative = true;
+            }
+
+            String[] strings = _word.split("\\.");
 
             Long big = Long.valueOf(strings[0]);
             Long small = Long.valueOf(strings[1]);
@@ -37,12 +44,12 @@ public class MoneyParser {
             }
 
             if (small <= 100) {
-                return big * SCALE + small;
+                return negative ? -1 * (big * SCALE + small) : big * SCALE + small;
             } else {
-                throw new IllegalArgumentException(text);
+                throw new IllegalArgumentException(_word);
             }
         } else {
-            return Long.valueOf(text) * SCALE;
+            return Long.valueOf(_word) * SCALE;
         }
     }
 
@@ -87,6 +94,12 @@ public class MoneyParser {
             return true;
         }
         return false;
+    }
+
+    public static String formatMoney(long balance) {
+        long bigSize = balance / 100;
+        long smallSize = balance % 100;
+        return bigSize + "." + smallSize;
     }
 
     public static String format(Long value, String currency) {

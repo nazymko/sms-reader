@@ -17,9 +17,83 @@ public class SmsReader {
         final int[] index = {0};
 //        try (BufferedReader reader = new BufferedReader(new FileReader(new File(file)))) {
 //            reader.lines().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
-        mockSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
+        mockSmsFido().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
 //        }
         return list;
+    }
+
+    private List<String> mockSmsFido() {
+        return Arrays.asList(
+                "Karta 2427 summa -192.27 UAH adres DOBROGODNYAVINNITS data 21.07.15 10:12 dostupno 7879.52 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -528.08 UAH adres GROSH2 data 21.07.15 11:15 dostupno 7385.44 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -44.60 UAH adres NashaRyabaY31 data 21.07.15 19:38 dostupno 7340.84 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -400.00 UAH adres  data 22.07.15 11:08 dostupno 6928.84 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -300.00 UAH adres  data 22.07.15 14:18 dostupno 6618.59 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Your password is 47233280",
+                "Your password is 65600318",
+                "Ваш заказ №20999199 перешел в статус Выполнен успешно. fidomarket.ua",
+                "Karta 2427 summa -67.24 UAH adres EKO KASA 2 data 26.07.15 08:05 dostupno 6551.35 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -270.00 UAH adres  data 27.07.15 11:59 dostupno 6271.62 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -37.76 UAH adres SUPERMARKET \"KORONA\" data 27.07.15 12:06 dostupno 6233.86 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -319.60 UAH adres EKO KASA 4 data 28.07.15 18:29 dostupno 5914.26 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -150.00 UAH adres  data 28.07.15 23:42 dostupno 5756.63 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -160.18 UAH adres EKO KASA 7 data 29.07.15 12:11 dostupno 5596.45 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -56.40 UAH adres NashaRyabaY31 data 29.07.15 14:36 dostupno 5540.05 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -46.49 UAH adres SUPERMARKET \"KORONA\" data 29.07.15 14:42 dostupno 5493.56 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Your password is 57708783",
+                "Your password is 15003032",
+                "Ваш заказ №21368417 перешел в статус Выполнен успешно. fidomarket.ua",
+                "Karta 2427 summa -1000.00 UAH adres  data 29.07.15 17:06 dostupno 4431.06 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -200.00 UAH adres  data 29.07.15 23:18 dostupno 4222.56 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -362.41 UAH adres RAILWAYTICKETS data 31.07.15 10:08 dostupno 3860.15 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -350.00 UAH adres  data 31.07.15 11:30 dostupno 3499.02 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -500.00 UAH adres  data 31.07.15 15:53 dostupno 2985.27 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -8.79 USD adres STEAMPOWERED.COM data 31.07.15 23:33 dostupno 2757.72 UAH (credit 0.00 UAH). fidomarket.ua",
+                "NEUSPISHNO! Perevyscheno limit. Zvernit'sya do banku po tel.0800307676. Kartka: 514073******2427. DIGITALOCEAN.COM\\X\\NEW YORK CITY. 01.08.15 06:41. fidomarket.ua",
+                "NEUSPISHNO! Perevyscheno limit. Zvernit'sya do banku po tel.0800307676. Kartka: 514073******2427. DIGITALOCEAN.COM\\X\\NEW YORK CITY. 01.08.15 06:41. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 4.66 UAH 01.08.15 00:15, dostupno 2762.38 UAH. FIDOBANK. fidomarket.ua",
+                "Karta 2427 summa -500.00 UAH adres  data 01.08.15 21:56 dostupno 2248.63 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 2427 summa -20.00 USD adres DIGITALOCEAN.COM data 03.08.15 05:21 dostupno 1730.90 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Dlia prodovzhennia korystuvannia kredytnoiu kartkoiu pogasit minimalnyj platizh u sumi 28.21 grn. do ostanniogo robochogo dnia tsiogo misiatsia.Yakscho bazhaete zberegty umovy greis periodu pogasit zaborgovanist u sumi 28.21 grn. do 20-go robochogo dnia tsiogo misiatsia 0800307676",
+                "Vashu kartku bulo zablokovano (514073******2427) 04.08.15 14:09. Zvernit'sya do banku po tel.0800307676. fidomarket.ua",
+                "Shanovniy Kliente! Povidomlyaemo Vam, scho Vasha karta *0669 pidklyuchena do servisu SMS-informuvannya vid FIDOBANKu. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 2337.00 UAH 04.08.15 14:48, dostupno 4138.57 UAH. FIDOBANK. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 4138.57 UAH 04.08.15 15:04, dostupno 4138.57 UAH. FIDOBANK. fidomarket.ua",
+                "Karta 0669 summa -500.00 UAH adres  data 04.08.15 15:17 dostupno 3633.57 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -500.00 UAH adres  data 04.08.15 15:18 dostupno 3128.57 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -500.00 UAH adres  data 04.08.15 15:19 dostupno 2623.57 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -500.00 UAH adres  data 04.08.15 15:19 dostupno 2118.57 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -500.00 UAH adres  data 04.08.15 15:20 dostupno 1613.57 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -5.03 USD adres STEAMPOWERED.COM data 05.08.15 11:18 dostupno 1483.91 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -808.24 UAH adres UKRZALIZNYTSIA data 05.08.15 23:41 dostupno 675.67 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Your password is 66370302",
+                "Your password is 65825970",
+                "Ваш заказ №21849268 перешел в статус Выполнен успешно. fidomarket.ua",
+                "Karta 0669 summa -5.09 USD adres STEAMGAMES.COM data 15.08.15 11:46 dostupno 516.82 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Shanovniy kliente, Vashu kartku 514073******9379 perevypushcheno. Otrymayte kartku u viddilenni Fidobanku. Info: 0800307676",
+                "Karta 0669 summa -167.48 UAH adres UZ.GOV.UA data 18.08.15 20:55 dostupno 360.71 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -30.00 UAH adres EVEREST.VN.UA-3 data 21.08.15 12:20 dostupno 330.71 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -15.00 UAH adres EVEREST.VN.UA-3 data 21.08.15 12:29 dostupno 315.71 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Your password is 40309233",
+                "Your password is 28805500",
+                "Ваш заказ №22714547 перешел в статус Выполнен успешно. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 4000.00 UAH 21.08.15 14:20, dostupno 4275.71 UAH. FIDOBANK. fidomarket.ua",
+                "Karta 0669 summa -46.57 UAH adres GIPERMARKET GROSH data 29.08.15 09:47 dostupno 4199.14 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -100.00 UAH adres  data 29.08.15 09:48 dostupno 4094.14 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -400.00 UAH adres  data 30.08.15 11:35 dostupno 3689.14 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 20.78 UAH 01.09.15 00:10, dostupno 3709.71 UAH. FIDOBANK. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 0.46 UAH 01.09.15 00:10, dostupno -59.54 UAH. FIDOBANK. fidomarket.ua",
+                "Vash kartkovyj rahunok bulo popovneno, suma 0.21 UAH 01.09.15 05:50, dostupno 971.58 UAH. FIDOBANK. fidomarket.ua",
+                "Vashu kartku bulo zablokovano (514073******2000) 01.09.15 09:46. Zvernit'sya do banku po tel.0800307676. fidomarket.ua",
+                "Karta 0669 summa -362.86 UAH adres UKRZALIZNYTSIA data 01.09.15 11:35 dostupno 3346.85 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Dlia prodovzhennia korystuvannia kredytnoiu kartkoiu pogasit minimalnyj platizh u sumi 28.63 grn. do ostanniogo robochogo dnia tsiogo misiatsia.Yakscho bazhaete zberegty umovy greis periodu pogasit zaborgovanist u sumi 28.63 grn. do 20-go robochogo dnia tsiogo misiatsia 0800307676",
+                "Vash kartkovyj rahunok bulo popovneno, suma 59.54 UAH 02.09.15 22:19, dostupno 0.00 UAH. FIDOBANK. fidomarket.ua",
+                "Karta 0669 summa -6.14 USD adres STEAMGAMES.COM data 03.09.15 21:28 dostupno 3128.02 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Karta 0669 summa -156.76 UAH adres RAILWAYTICKETS data 10.09.15 10:06 dostupno 2985.75 UAH (credit 0.00 UAH). fidomarket.ua",
+                "Your password is 56498505",
+                "Your password is 88612254",
+                "Ваш заказ №23874792 перешел в статус Выполнен успешно. fidomarket.ua"
+        );
     }
 
     private List<String> mockSms() {

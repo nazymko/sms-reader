@@ -3,10 +3,10 @@ package org.nazymko.struct;
 /**
  * Created by Andrew Nazymko
  */
-public class Struct {
+public class LineStruct {
     private Node start;
 
-    public Struct(Node start) {
+    public LineStruct(Node start) {
         this.start = start;
     }
 

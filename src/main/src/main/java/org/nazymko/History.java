@@ -115,8 +115,8 @@ public class History {
         return "History{" +
                 "sms='" + sms + '\'' +
                 ", deviceDate=" + deviceDate +
-                ", meta=" + meta +
-                ", smsDate=" + smsDate +
+                ", \n\t\tmeta=" + meta +
+                ", \n\t\tsmsDate=" + smsDate +
                 '}';
     }
 }
