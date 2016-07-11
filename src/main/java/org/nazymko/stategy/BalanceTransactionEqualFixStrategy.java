@@ -17,7 +17,7 @@ public class BalanceTransactionEqualFixStrategy implements Strategy<History> {
         if (min.isPresent() && max.isPresent() && min.get().equals(max.get())) {
             if (mutableTarget.getMeta().getMoneys().size() == 2) {
                 mutableTarget.getMeta().getMoneys().get(0).setType(Money.Type.BALANCE);
-                mutableTarget.getMeta().getMoneys().get(1).setType(Money.Type.TRANSACTION);
+                mutableTarget.getMeta().getMoneys().get(1).setType(Money.Type.OPERATION);
             }
         }
     }

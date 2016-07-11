@@ -1,5 +1,6 @@
 package org.nazymko;
 
+import com.google.common.base.MoreObjects;
 import org.nazymko.utils.CurrencyRegistry;
 import org.nazymko.utils.DateParser;
 import org.nazymko.utils.MoneyParser;
@@ -18,6 +19,7 @@ public class History {
     private LocalDateTime deviceDate;
     private Meta meta = new Meta();
     private LocalDateTime smsDate;
+    private List<String> cards = new ArrayList<>();
 
     public History(String sms, LocalDateTime time) {
         this.sms = sms;
@@ -48,6 +50,14 @@ public class History {
             }
         }
         return history;
+    }
+
+    public List<String> getCards() {
+        return cards;
+    }
+
+    public void addCard(String card) {
+        this.cards.add(card);
     }
 
     public List<History> getDependencies() {
@@ -112,11 +122,14 @@ public class History {
 
     @Override
     public String toString() {
-        return "History{" +
-                "sms='" + sms + '\'' +
-                ", deviceDate=" + deviceDate +
-                ", \n\t\tmeta=" + meta +
-                ", \n\t\tsmsDate=" + smsDate +
-                '}';
+        return MoreObjects.toStringHelper(this)
+//                .add("related", related)
+//                .add("dependencies", dependencies)
+                .add("sms", sms)
+                .add("deviceDate", deviceDate)
+                .add("meta", meta)
+                .add("smsDate", smsDate)
+                .add("cards", cards)
+                .toString();
     }
 }

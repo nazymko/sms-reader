@@ -1,5 +1,7 @@
 package org.nazymko.utils;
 
+import org.nazymko.History;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -13,10 +15,14 @@ public class DateParser {
     private static final String[][] TEMPLATES = {
             {"\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy-MM-dd HH:mm:ss"},//2016-07-03 21:44:06
             {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm"},//22.07.15 14:18
-            {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm:ss"}//22.07.15 14:18:ss
+            {"\\d{2}\\.\\d{2}\\.\\d{4}\\s\\d{2}:\\d{2}", "dd.MM.yyyy HH:mm"},//22.07.2015 14:18
+            {"\\d{2}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}", "dd.MM.yy HH:mm"},//22.07.15 14:18
+            {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm:ss"},//2015.07.15 14:18:ss
+            {"\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}", "yyyy.MM.dd HH:mm"}//2015.07.15 14:18
     };
     private static final DateTimeFormatter[] FORMATS = new DateTimeFormatter[TEMPLATES.length];
     private static final Pattern[] PATTERNS = new Pattern[TEMPLATES.length];
+    private static final DateTimeFormatter DEFAULT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     static {
         for (int i = 0; i < TEMPLATES.length; i++) {
@@ -48,5 +54,14 @@ public class DateParser {
         }
         return false;
 
+    }
+
+
+    public static String format(History history) {
+        return format(history.getSmsDate());
+    }
+
+    public static String format(LocalDateTime date) {
+        return date.format(DEFAULT_DATE_FORMAT);
     }
 }

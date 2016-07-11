@@ -1,6 +1,7 @@
 package org.nazymko;
 
 import org.nazymko.stategy.*;
+import org.nazymko.utils.DateParser;
 import org.nazymko.utils.MoneyParser;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.nazymko.utils.MoneyParser.formatMoney;
+import static org.nazymko.utils.MoneyParser.format;
 
 public class Main {
 
@@ -18,7 +19,9 @@ public class Main {
             new CurrencyMoneyStrategy(),
             new BalanceIsBiggestValueStrategy(),
             new BillIsSmallestValueStrategy(),
-            new BalanceTransactionEqualFixStrategy()
+            new BalanceTransactionEqualFixStrategy(),
+            new CardIs4Digits(),
+            new RemoveZeroMoneyStrategy()
     );
 
     private static List<BulkStrategy> bulkStrategies = Arrays.asList(
@@ -27,7 +30,7 @@ public class Main {
     /* private static void balance(List<History> histories) {
          for (History history : histories) {
              Money balanceMoney = MoneyParser.byType(Money.Type.BALANCE, history);
-             Money billMoney = MoneyParser.byType(Money.Type.TRANSACTION, history);
+             Money billMoney = MoneyParser.byType(Money.Type.OPERATION, history);
              if (balanceMoney == null || billMoney == null) {
                  System.out.println("bill = " + billMoney);
                  System.out.println("balance = " + balanceMoney);
@@ -52,6 +55,17 @@ public class Main {
          }
      }*/
     private static long balance = 0;
+
+    private static void balance(List<History> histories) {
+        for (History history : histories) {
+            System.out.println(String.format("[\"%s\",%s,%s]",
+                    DateParser.format(history),
+                    MoneyParser.format(MoneyParser.byType(Money.Type.BALANCE, history).getValue()),
+                    MoneyParser.format(MoneyParser.byType(Money.Type.OPERATION,history).getValue())
+            ));
+            ;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -106,12 +120,12 @@ public class Main {
     private static void printHistoryBalance(History history) {
 
         if (isEmptyHistory(history)) {
-            System.out.println(String.format("[\"%s\", %s, 0.00,0.00],", history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")), formatMoney(balance)));
+            System.out.println(String.format("[\"%s\", %s, 0.00,0.00],", DateParser.format(history), format(balance)));
             return;
         }
 
         Money balanceMoney = MoneyParser.byType(Money.Type.BALANCE, history);
-        Money billMoney = MoneyParser.byType(Money.Type.TRANSACTION, history);
+        Money billMoney = MoneyParser.byType(Money.Type.OPERATION, history);
         if (balanceMoney == null || billMoney == null) {
             System.out.println("bill = " + billMoney);
             System.out.println("balance = " + balanceMoney);
@@ -132,7 +146,7 @@ public class Main {
 
 
         String date = history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        System.out.println(String.format("[\"%s\", %5s, %5s,%5s],", date, formatMoney(balance), outcome, income));
+        System.out.println(String.format("[\"%s\", %5s, %5s,%5s],", date, format(balance), outcome, income));
     }
 
 
@@ -169,8 +183,8 @@ public class Main {
         return new ArrayList<>(container.values());
     }
 
-    private static void print(List<?> histories) {
-        for (Object history : histories) {
+    private static void print(List<? extends History> histories) {
+        for (History history : histories) {
             System.out.println(history);
         }
     }
@@ -238,7 +252,7 @@ public class Main {
 
                                 if (Money.Type.BALANCE.equals(_current.getType())) {
                                     System.out.println("\tINTEREST:\t" + MoneyParser.format(
-                                            bankInterest(_current, find(Money.Type.BALANCE, prevMoney), find(Money.Type.TRANSACTION, prevMoney)),
+                                            bankInterest(_current, find(Money.Type.BALANCE, prevMoney), find(Money.Type.OPERATION, prevMoney)),
                                             current.getCurrency()));
                                 }
 

@@ -96,9 +96,9 @@ public class MoneyParser {
         return false;
     }
 
-    public static String formatMoney(long balance) {
-        long bigSize = balance / 100;
-        long smallSize = balance % 100;
+    public static String format(Long value) {
+        long bigSize = value / 100;
+        long smallSize = value % 100;
         return bigSize + "." + smallSize;
     }
 

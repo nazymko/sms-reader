@@ -43,7 +43,7 @@ public class Money {
     }
 
     public enum Type {
-        BALANCE, TRANSACTION, UNKNOWN
+        BALANCE, OPERATION, UNKNOWN
     }
 
 }
