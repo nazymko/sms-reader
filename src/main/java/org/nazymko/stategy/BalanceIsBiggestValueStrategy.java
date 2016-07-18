@@ -16,4 +16,9 @@ public class BalanceIsBiggestValueStrategy implements Strategy<History> {
             max.get().setType(Money.Type.BALANCE);
         }
     }
+
+    @Override
+    public String description() {
+        return "Select biggest money value as 'current balance'";
+    }
 }

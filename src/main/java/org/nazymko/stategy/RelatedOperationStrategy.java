@@ -46,6 +46,11 @@ public class RelatedOperationStrategy implements BulkStrategy {
         }
     }
 
+    @Override
+    public String description() {
+        return "Bank send 'HOLD' & 'DEBIT' operations (initial and final approve) ";
+    }
+
     private boolean isRelatedOperations(History history, History prev) {
         return prev.getMeta().getChange().equals(history.getMeta().getChange());
     }

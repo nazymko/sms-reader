@@ -20,4 +20,9 @@ public class TwoMoneyRequiredFilter implements BulkStrategy {
             }
         }
     }
+
+    @Override
+    public String description() {
+        return "Remove sms that doesn't have two moneys";
+    }
 }

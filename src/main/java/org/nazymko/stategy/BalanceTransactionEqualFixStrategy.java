@@ -21,4 +21,9 @@ public class BalanceTransactionEqualFixStrategy implements Strategy<History> {
             }
         }
     }
+
+    @Override
+    public String description() {
+        return "Fix issue when operation and balance is equal";
+    }
 }

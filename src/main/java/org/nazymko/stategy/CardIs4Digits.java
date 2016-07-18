@@ -20,4 +20,9 @@ public class CardIs4Digits implements Strategy<History> {
             }
         }
     }
+
+    @Override
+    public String description() {
+        return "Sms contain 4 digits for card identification";
+    }
 }

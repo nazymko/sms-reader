@@ -17,4 +17,9 @@ public class FillMetaWithBalance implements Strategy<History> {
         mutableTarget.getMeta().setChange(transaction.getValue());
 
     }
+
+    @Override
+    public String description() {
+        return "Additional meta data identification";
+    }
 }

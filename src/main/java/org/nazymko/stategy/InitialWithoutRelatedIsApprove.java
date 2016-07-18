@@ -6,8 +6,7 @@ import org.nazymko.State;
 /**
  * Created by 1 on 10.07.2016.
  */
-public class InitialWithoutRelatedIsAproved implements Strategy<History> {
-
+public class InitialWithoutRelatedIsApprove implements Strategy<History> {
 
     @Override
     public void apply(History mutableTarget) {
@@ -15,5 +14,10 @@ public class InitialWithoutRelatedIsAproved implements Strategy<History> {
             mutableTarget.getMeta().setState(State.APPROVE);
         }
 
+    }
+
+    @Override
+    public String description() {
+        return "Force mark single sms with 'initial' status as 'approve'";
     }
 }

@@ -5,7 +5,6 @@ import org.nazymko.utils.DateParser;
 import org.nazymko.utils.MoneyParser;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -15,6 +14,7 @@ public class Main {
 
     public static final double INTEREST = 0.07;
     public static final String ZERO = "0.00";
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private static List<Strategy> strategies = Arrays.asList(
             new CurrencyMoneyStrategy(),
             new BalanceIsBiggestValueStrategy(),
@@ -24,36 +24,10 @@ public class Main {
             new RemoveZeroMoneyStrategy()
     );
 
-    private static List<BulkStrategy> bulkStrategies = Arrays.asList(
+    private static List<Strategy> bulkStrategies = Arrays.asList(
             new TwoMoneyRequiredFilter()
     );
-    /* private static void balance(List<History> histories) {
-         for (History history : histories) {
-             Money balanceMoney = MoneyParser.byType(Money.Type.BALANCE, history);
-             Money billMoney = MoneyParser.byType(Money.Type.OPERATION, history);
-             if (balanceMoney == null || billMoney == null) {
-                 System.out.println("bill = " + billMoney);
-                 System.out.println("balance = " + balanceMoney);
-                 continue;
-             }
-             String outcome = null;
-             String income = null;
 
-             if (history.getMeta().getOperation() == Operation.OUTCOME) {
-                 outcome = MoneyParser.format(billMoney.getValue(), "");
-                 income = ZERO;
-             } else if (history.getMeta().getOperation() == Operation.INCOME) {
-                 outcome = ZERO;
-                 income = MoneyParser.format(billMoney.getValue(), "");
-             }
-
-             String balanceCurrency = MoneyParser.format(balanceMoney.getValue(), "");
-
-
-             String date = history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-             System.out.println(String.format("[\"%s\", %5s, %5s,%5s],", date, balanceCurrency, outcome, income));
-         }
-     }*/
     private static long balance = 0;
 
     private static void balance(List<History> histories) {
@@ -61,7 +35,7 @@ public class Main {
             System.out.println(String.format("[\"%s\",%s,%s]",
                     DateParser.format(history),
                     MoneyParser.format(MoneyParser.byType(Money.Type.BALANCE, history).getValue()),
-                    MoneyParser.format(MoneyParser.byType(Money.Type.OPERATION,history).getValue())
+                    MoneyParser.format(MoneyParser.byType(Money.Type.OPERATION, history).getValue())
             ));
             ;
         }
@@ -82,15 +56,44 @@ public class Main {
         applySingleStrategy(histories, new FillMetaWithBalance());
         applyBulkStrategy(histories, new RelatedOperationStrategy());
         applyBulkStrategy(histories, new OperationTimeStrategy());
-        applySingleStrategy(histories, new InitialWithoutRelatedIsAproved());
-        analise(histories, step);
-        print(histories);
-        groupBalance(histories);
-//        balance(histories);
-
-
+        applySingleStrategy(histories, new InitialWithoutRelatedIsApprove());
+        applyBulkStrategy(histories, new GroupByDatesStrategy());
+        printAll(histories);
         return null;
 
+    }
+
+    private static void printAll(List<History> histories) {
+        System.out.println(" [\"Date\", \"Balance\",\"Income\",\"Outcome\"],");
+        for (History history : histories) {
+            Money balance = MoneyParser.byType(Money.Type.BALANCE, history);
+            Money operation = MoneyParser.byType(Money.Type.OPERATION, history);
+
+            String balanceMoneyString = balance == null ? "0.00" : format(balance.getValue());
+            String operationMoneyStringNegative = operation == null ? "0.00" : Operation.OUTCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
+            String operationMoneyStringPositive = operation == null ? "0.00" : Operation.INCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
+
+            System.out.println(String.format("[\"%s\",%s,%s,%s],", history.getSmsDate().format(FORMATTER), balanceMoneyString, operationMoneyStringPositive, operationMoneyStringNegative));
+        }
+    }
+
+    private static void print(List<History> histories, Money.Type type) {
+        histories.sort(new HistoryTimeComparator());
+        for (History history : histories) {
+            Money money = MoneyParser.byType(type, history);
+            if (money != null) {
+                System.out.println(String.format("[\"%s\",%s],", history.getSmsDate().format(FORMATTER), MoneyParser.format(money.getValue())));
+            } else {
+                System.out.println(String.format("[\"%s\",0.00],", history.getSmsDate().format(FORMATTER)));
+            }
+        }
+
+    }
+
+    private static void printMoneys(List<History> histories) {
+        for (History history : histories) {
+            System.out.println(history.getMeta().getMoneys());
+        }
     }
 
     private static void groupBalance(List<History> histories) {
@@ -105,16 +108,6 @@ public class Main {
 
 //            printHistoryBalance(history);
         }
-    }
-
-    private static History merge(History history, History prev) {
-        History empty = History.empty(history.getSmsDate());
-
-        return null;
-    }
-
-    private static boolean sameDay(LocalDateTime currentDate, LocalDateTime previousDate) {
-        return currentDate.getYear() == previousDate.getYear() && currentDate.getDayOfYear() == previousDate.getDayOfYear();
     }
 
     private static void printHistoryBalance(History history) {
@@ -145,7 +138,7 @@ public class Main {
         String balanceCurrency = MoneyParser.format(balanceMoney.getValue(), "");
 
 
-        String date = history.getSmsDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String date = history.getSmsDate().format(FORMATTER);
         System.out.println(String.format("[\"%s\", %5s, %5s,%5s],", date, format(balance), outcome, income));
     }
 
@@ -155,19 +148,31 @@ public class Main {
     }
 
     private static void applySingleStrategy(List<History> histories, List<Strategy> strategies) {
-        strategies.stream().forEach(strategy -> histories.stream().forEach(strategy::apply));
+        strategies.stream().forEach(strategy -> {
+            log(strategy);
+            histories.stream().forEach(strategy::apply);
+        });
     }
 
     private static void applySingleStrategy(List<History> histories, Strategy strategy) {
+        log(strategy);
         histories.stream().forEach(strategy::apply);
     }
 
-    private static void applyBulkStrategy(List<History> histories, List<BulkStrategy> strategies) {
-        strategies.stream().forEach(stat -> stat.apply(histories));
+    private static void applyBulkStrategy(List<History> histories, List<Strategy> strategies) {
+        strategies.stream().forEach(strategy -> {
+            log(strategy);
+            strategy.apply(histories);
+        });
     }
 
     private static void applyBulkStrategy(List<History> histories, BulkStrategy strategy) {
+        log(strategy);
         strategy.apply(histories);
+    }
+
+    private static void log(Strategy strategy) {
+        System.err.println("STRATEGY: " + strategy.description());
     }
 
     private static void sortByTime(List<History> histories) {
@@ -242,13 +247,13 @@ public class Main {
 //                      _current - current amount of money
                         if (_current.getType().equals(Money.Type.BALANCE)) {
                             if (MoneyParser.isOperationComponents(_prev.getValue(), _current.getValue(), _prev_money_2.getValue(), INTEREST, current.getCurrency())) {
-                                System.out.println(current);
-                                System.out.println(prev);
+                                System.out.println("CURRENT : " + current);
+                                System.out.println("PREVIOUS: " + prev);
                                 System.out.println("CURRENT");
-                                info(_current);
+                                log(_current);
                                 System.out.println("PREVIOUS:");
-                                info(_prev_money_2);
-                                info(_prev);
+                                log(_prev_money_2);
+                                log(_prev);
 
                                 if (Money.Type.BALANCE.equals(_current.getType())) {
                                     System.out.println("\tINTEREST:\t" + MoneyParser.format(
@@ -288,7 +293,7 @@ public class Main {
     }
 
 
-    private static void info(Money _current) {
+    private static void log(Money _current) {
         System.out.println("\t" + _current.getType() + "\t:\t" + MoneyParser.format(_current.getValue(), _current.getCurrency()));
     }
 

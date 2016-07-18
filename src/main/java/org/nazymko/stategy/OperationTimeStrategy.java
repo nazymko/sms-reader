@@ -41,4 +41,9 @@ public class OperationTimeStrategy implements BulkStrategy {
         }
 
     }
+
+    @Override
+    public String description() {
+        return "Recognize income/outcome operation based on balance value";
+    }
 }

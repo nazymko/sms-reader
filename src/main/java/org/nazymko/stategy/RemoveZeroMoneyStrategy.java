@@ -20,5 +20,10 @@ public class RemoveZeroMoneyStrategy implements Strategy<History> {
         }
     }
 
+    @Override
+    public String description() {
+        return "Sms sometimes have unnecessary zero money (0.00 USD)";
+    }
+
 
 }

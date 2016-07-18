@@ -17,8 +17,8 @@ public class SmsReader {
         final int[] index = {0};
 //        try (BufferedReader reader = new BufferedReader(new FileReader(new File(file)))) {
 //            reader.lines().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
-        mockSmsFido().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
-//        mockSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
+        mockProSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
+//        mockProSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
 //        }
         return list;
     }
@@ -97,7 +97,7 @@ public class SmsReader {
         );
     }
 
-    private List<String> mockSms() {
+    private List<String> mockProSms() {
         return Arrays.asList(
                 "JSC \"ProCredit Bank\": POSLUGU GSM BANKING USPISHNO PIDKLYUCHENO DO RAHUNKU KOD DOSTUPU 1949230682. ZA DOVIDKOYU BUD LASKA ZVERTAYTESYA DO BANKU.",
                 "JSC \"ProCredit Bank\": POSLUGU GSM BANKING USPISHNO PIDKLYUCHENO DO RAHUNKU KOD DOSTUPU 190365804. ZA DOVIDKOYU BUD LASKA ZVERTAYTESYA DO BANKU.",

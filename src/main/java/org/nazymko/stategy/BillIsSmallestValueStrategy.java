@@ -19,4 +19,9 @@ public class BillIsSmallestValueStrategy implements Strategy<History> {
             max.get().setType(Money.Type.OPERATION);
         }
     }
+
+    @Override
+    public String description() {
+        return "Mark smallest money as 'operation'";
+    }
 }

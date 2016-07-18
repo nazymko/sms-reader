@@ -27,6 +27,11 @@ public class CurrencyMoneyStrategy implements Strategy<History> {
 
     }
 
+    @Override
+    public String description() {
+        return "Recognize money as digits + currency tuple ";
+    }
+
     private boolean isSupportable(History target) {
         return target.getCurrency() != null;
     }

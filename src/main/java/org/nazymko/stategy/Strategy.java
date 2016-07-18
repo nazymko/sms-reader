@@ -5,4 +5,5 @@ package org.nazymko.stategy;
  */
 public interface Strategy<T> {
     void apply(T mutableTarget);
+    String description();
 }
