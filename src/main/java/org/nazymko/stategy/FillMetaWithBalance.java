@@ -14,8 +14,7 @@ public class FillMetaWithBalance implements Strategy<History> {
         Money transaction = MoneyParser.byType(Money.Type.OPERATION, mutableTarget);
 
         mutableTarget.getMeta().setBalance(balance.getValue());
-        mutableTarget.getMeta().setChange(transaction.getValue());
-
+        mutableTarget.getMeta().setOperation(transaction.getValue());
     }
 
     @Override

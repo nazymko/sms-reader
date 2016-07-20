@@ -14,7 +14,7 @@ public class TwoMoneyRequiredFilter implements BulkStrategy {
         Iterator<History> iterator = mutableTarget.iterator();
         while (iterator.hasNext()) {
             History next = iterator.next();
-            if (next.getMeta().getMoneys().size() < 2) {
+            if (next.getMeta().getMoneys().size() != 2) {
                 System.err.println("Removed:" + next);
                 iterator.remove();
             }

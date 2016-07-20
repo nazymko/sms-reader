@@ -15,6 +15,7 @@ public class RemoveZeroMoneyStrategy implements Strategy<History> {
         while (iterator.hasNext()) {
             Money next = iterator.next();
             if (next.getValue() == 0) {
+                System.err.println("Remove zero moneys:" + next);
                 iterator.remove();
             }
         }

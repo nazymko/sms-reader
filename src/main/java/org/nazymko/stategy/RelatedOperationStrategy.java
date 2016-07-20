@@ -42,7 +42,6 @@ public class RelatedOperationStrategy implements BulkStrategy {
                 prev.setDependencies(history);
                 history.setRelated(prev);
             }
-
         }
     }
 

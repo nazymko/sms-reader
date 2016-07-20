@@ -36,8 +36,6 @@ public class OperationTimeStrategy implements BulkStrategy {
                     reversedIndex--;
                 }
             }
-
-
         }
 
     }

@@ -15,17 +15,9 @@ public class Main {
     public static final double INTEREST = 0.07;
     public static final String ZERO = "0.00";
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-    private static List<Strategy> strategies = Arrays.asList(
-            new CurrencyMoneyStrategy(),
-            new BalanceIsBiggestValueStrategy(),
-            new BillIsSmallestValueStrategy(),
-            new BalanceTransactionEqualFixStrategy(),
-            new CardIs4Digits(),
-            new RemoveZeroMoneyStrategy()
-    );
 
     private static List<Strategy> bulkStrategies = Arrays.asList(
-            new TwoMoneyRequiredFilter()
+
     );
 
     private static long balance = 0;
@@ -50,14 +42,19 @@ public class Main {
         List<History> histories = HistoryConverter.convertIntoHistory(new SmsReader().open(/*file*/));
 
         sortByTime(histories);
-        cleanUpDigits(histories, 0.5);
-        applySingleStrategy(histories, strategies);
-        applyBulkStrategy(histories, bulkStrategies);
-        applySingleStrategy(histories, new FillMetaWithBalance());
-        applyBulkStrategy(histories, new RelatedOperationStrategy());
-        applyBulkStrategy(histories, new OperationTimeStrategy());
-        applySingleStrategy(histories, new InitialWithoutRelatedIsApprove());
-        applyBulkStrategy(histories, new GroupByDatesStrategy());
+
+        apply(histories, new CleanUpRegularDigits());
+        apply(histories, new CurrencyMoneyStrategy());
+        apply(histories, new RemoveZeroMoneyStrategy());
+        apply(histories, new TwoMoneyRequiredFilter());
+        apply(histories, new TwoMoneysStrategy());
+        apply(histories, new BalanceTransactionEqualFixStrategy());
+        apply(histories, new CardIs4Digits());
+        apply(histories, new RelatedOperationStrategy());
+        apply(histories, new OperationTimeStrategy());
+        apply(histories, new InitialWithoutRelatedIsApprove());
+        apply(histories, new GroupByDatesStrategy());
+
         printAll(histories);
         return null;
 
@@ -159,6 +156,15 @@ public class Main {
         histories.stream().forEach(strategy::apply);
     }
 
+    private static void apply(List<History> histories, Strategy strategy) {
+
+        if (strategy instanceof BulkStrategy) {
+            applyBulkStrategy(histories, (BulkStrategy) strategy);
+        } else {
+            applySingleStrategy(histories, strategy);
+        }
+    }
+
     private static void applyBulkStrategy(List<History> histories, List<Strategy> strategies) {
         strategies.stream().forEach(strategy -> {
             log(strategy);
@@ -194,26 +200,6 @@ public class Main {
         }
     }
 
-    private static void cleanUpDigits(List<History> histories, double threshold) {
-        HashMap<Long, Long> counter = new HashMap<>();
-        for (History history : histories) {
-            for (Long aLong : history.getDigits()) {
-                counter.put(aLong, counter.getOrDefault(aLong, 0L) + 1);
-            }
-        }
-        int limit = (int) (histories.size() * threshold);
-
-        counter.entrySet().stream().filter(entry -> entry.getValue() > limit).forEach(entry -> {
-            removeDigit(histories, entry.getKey());
-        });
-
-    }
-
-    private static void removeDigit(List<History> histories, Long key) {
-        for (History history : histories) {
-            history.getDigits().remove(key);
-        }
-    }
 
     private static List<Change> analise(List<History> histories, int stepBack) {
         System.out.println("step = [" + stepBack + "]");

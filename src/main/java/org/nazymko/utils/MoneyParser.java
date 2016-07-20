@@ -97,23 +97,26 @@ public class MoneyParser {
     }
 
     public static String format(Long value) {
-        long bigSize = value / 100;
-        long smallSize = value % 100;
-        return bigSize + "." + smallSize;
+        return String.valueOf((double) value / 100);
     }
 
     public static String format(Long value, String currency) {
-        String valueString = value.toString();
-        if (valueString.length() > 2) {
-            return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
-        } else {
-            if (valueString.length() == 0) {
-                return "0.00 " + currency;
-            } else {
-                return (double) (value / 100) + " " + currency;
-            }
 
+        if (value == 0) {
+            return "0.00";
         }
+        return value / 100 + " " + currency;
+//        String valueString = value.toString();
+//        if (valueString.length() > 2) {
+//            return valueString.substring(0, valueString.length() - 2) + "." + valueString.substring(valueString.length() - 2) + " " + currency;
+//        } else {
+//            if (valueString.length() == 0) {
+//                return "0.00 " + currency;
+//            } else {
+//                return (double) (value / 100) + " " + currency;
+//            }
+
+//        }
     }
 
     public static Money byType(Money.Type type, History history) {

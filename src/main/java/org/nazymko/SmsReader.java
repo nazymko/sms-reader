@@ -18,7 +18,7 @@ public class SmsReader {
 //        try (BufferedReader reader = new BufferedReader(new FileReader(new File(file)))) {
 //            reader.lines().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
         mockProSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
-//        mockProSms().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
+//        mockSmsFido().stream().forEachOrdered(line -> list.add(new Sms(LocalDateTime.now().minus((long) ((++index[0]) * 100_000), ChronoUnit.SECONDS), line)));
 //        }
         return list;
     }

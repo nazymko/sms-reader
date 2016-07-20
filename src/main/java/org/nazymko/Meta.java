@@ -27,7 +27,7 @@ public class Meta {
         return change;
     }
 
-    public void setChange(long change) {
+    public void setOperation(long change) {
         this.change = change;
     }
 

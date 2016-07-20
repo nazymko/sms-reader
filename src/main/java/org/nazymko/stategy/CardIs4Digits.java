@@ -2,6 +2,9 @@ package org.nazymko.stategy;
 
 import org.nazymko.History;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,4 +28,5 @@ public class CardIs4Digits implements Strategy<History> {
     public String description() {
         return "Sms contain 4 digits for card identification";
     }
+
 }

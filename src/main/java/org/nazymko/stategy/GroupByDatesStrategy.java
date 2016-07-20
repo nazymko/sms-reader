@@ -75,8 +75,7 @@ public class GroupByDatesStrategy implements BulkStrategy {
     }
 
     private long newValue(Money moneyFromLast, Money moneyFromNext) {
-        long summ = moneyFromNext.getValue() + moneyFromLast.getValue();
-        return summ;
+        return moneyFromNext.getValue() + moneyFromLast.getValue();
     }
 
     private boolean isFromSameGroup(History last, History next) {

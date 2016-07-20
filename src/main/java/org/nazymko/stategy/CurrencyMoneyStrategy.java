@@ -29,7 +29,7 @@ public class CurrencyMoneyStrategy implements Strategy<History> {
 
     @Override
     public String description() {
-        return "Recognize money as digits + currency tuple ";
+        return "Recognize money as digits + currency toople ";
     }
 
     private boolean isSupportable(History target) {
