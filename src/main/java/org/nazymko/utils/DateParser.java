@@ -4,6 +4,7 @@ import org.nazymko.History;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,5 +64,22 @@ public class DateParser {
 
     public static String format(LocalDateTime date) {
         return date.format(DEFAULT_DATE_FORMAT);
+    }
+
+    public static boolean inSameDay(LocalDateTime date1, LocalDateTime date2) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+
+        long difference = between(date1, date2, ChronoUnit.DAYS);
+
+        return difference == 0;
+    }
+
+    private static long between(LocalDateTime date1, LocalDateTime date2, ChronoUnit chronoUnit) {
+        LocalDateTime localDateTime1 = date1.truncatedTo(chronoUnit);
+        LocalDateTime localDateTime2 = date2.truncatedTo(chronoUnit);
+
+        return Math.abs(ChronoUnit.DAYS.between(localDateTime1, localDateTime2));
     }
 }

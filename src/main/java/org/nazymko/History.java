@@ -20,6 +20,7 @@ public class History {
     private Meta meta = new Meta();
     private LocalDateTime smsDate;
     private List<String> cards = new ArrayList<>();
+    private List<String> mergedSms = new ArrayList<>();
 
     public History(String sms, LocalDateTime time) {
         this.sms = sms;
@@ -50,6 +51,14 @@ public class History {
             }
         }
         return history;
+    }
+
+    public List<String> getMergedSms() {
+        return mergedSms;
+    }
+
+    public void mergeSms(String mergedSms) {
+        this.mergedSms.add(mergedSms);
     }
 
     public List<String> getCards() {

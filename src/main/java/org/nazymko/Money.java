@@ -17,6 +17,12 @@ public class Money {
         this.value = value;
     }
 
+    public Money(String currency, Long value, Type type) {
+        this.currency = currency;
+        this.value = value;
+        this.type = type;
+    }
+
     public Type getType() {
         return type;
     }
