@@ -1,9 +1,9 @@
-package org.nazymko.stategy;
+package org.nazymko.stategy.stategy;
 
-import org.nazymko.History;
-import org.nazymko.HistoryTimeComparator;
-import org.nazymko.HistoryUtil;
-import org.nazymko.utils.DateParser;
+import org.nazymko.stategy.History;
+import org.nazymko.stategy.HistoryTimeComparator;
+import org.nazymko.stategy.HistoryUtil;
+import org.nazymko.stategy.utils.DateParser;
 
 import java.util.ArrayList;
 import java.util.List;

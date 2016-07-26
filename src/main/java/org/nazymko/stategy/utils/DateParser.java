@@ -1,6 +1,6 @@
-package org.nazymko.utils;
+package org.nazymko.stategy.utils;
 
-import org.nazymko.History;
+import org.nazymko.stategy.History;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

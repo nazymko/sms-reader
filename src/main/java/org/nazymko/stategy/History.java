@@ -1,9 +1,9 @@
-package org.nazymko;
+package org.nazymko.stategy;
 
 import com.google.common.base.MoreObjects;
-import org.nazymko.utils.CurrencyRegistry;
-import org.nazymko.utils.DateParser;
-import org.nazymko.utils.MoneyParser;
+import org.nazymko.stategy.utils.CurrencyRegistry;
+import org.nazymko.stategy.utils.DateParser;
+import org.nazymko.stategy.utils.MoneyParser;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,27 +14,20 @@ import java.util.*;
 public class History {
     private List<History> related = new ArrayList<>();
     private List<History> dependencies = new ArrayList<>();
-    private List<String> sms = new ArrayList<>();
+    private String sms;
     private LocalDateTime deviceDate;
     private Meta meta = new Meta();
     private LocalDateTime smsDate;
     private Set<String> cards = new HashSet<>();
     private List<String> mergedSms = new ArrayList<>();
 
-    public History(LocalDateTime time, String... sms) {
-        this.sms.addAll(Arrays.asList(sms));
+    public History(String sms, LocalDateTime time) {
+        this.sms = sms;
         this.deviceDate = time;
     }
 
-    public History(LocalDateTime smsDate, List<String> allSms, List<String> allSms1) {
-        sms.addAll(allSms);
-        sms.addAll(allSms1);
-
-        this.deviceDate = smsDate;
-    }
-
     public static History empty(LocalDateTime smsDate) {
-        History history = new History(null, "null");
+        History history = new History("null", null);
         history.setSmsDate(smsDate);
         return history;
     }
@@ -44,7 +37,7 @@ public class History {
     }
 
     public static History of(String sms, LocalDateTime deviceTime) {
-        History history = new History(deviceTime, sms);
+        History history = new History(sms, deviceTime);
         if (DateParser.hasDate(sms)) {
             history.setSmsDate(DateParser.parse(sms));
         }
@@ -100,13 +93,8 @@ public class History {
     }
 
     public String getSms() {
-        return sms.get(0);
-    }
-
-    public List<String> getAllSms() {
         return sms;
     }
-
 
     public LocalDateTime getDeviceDate() {
         return deviceDate;

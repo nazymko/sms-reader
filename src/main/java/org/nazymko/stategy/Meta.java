@@ -1,4 +1,4 @@
-package org.nazymko;
+package org.nazymko.stategy;
 
 import java.util.*;
 

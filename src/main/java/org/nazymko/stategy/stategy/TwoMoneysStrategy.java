@@ -1,7 +1,7 @@
-package org.nazymko.stategy;
+package org.nazymko.stategy.stategy;
 
-import org.nazymko.History;
-import org.nazymko.Money;
+import org.nazymko.stategy.History;
+import org.nazymko.stategy.Money;
 
 import java.util.List;
 import java.util.Optional;

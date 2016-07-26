@@ -1,8 +1,8 @@
-package org.nazymko.stategy;
+package org.nazymko.stategy.stategy;
 
-import org.nazymko.History;
-import org.nazymko.Money;
-import org.nazymko.utils.MoneyParser;
+import org.nazymko.stategy.History;
+import org.nazymko.stategy.Money;
+import org.nazymko.stategy.utils.MoneyParser;
 
 /**
  * Created by 1 on 09.07.2016.

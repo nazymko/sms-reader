@@ -1,15 +1,26 @@
-package org.nazymko;
+package org.nazymko.stategy;
 
-import org.nazymko.stategy.*;
-import org.nazymko.utils.DateParser;
-import org.nazymko.utils.MoneyParser;
+import org.nazymko.stategy.stategy.*;
+import org.nazymko.stategy.stategy.BalanceTransactionEqualFixStrategy;
+import org.nazymko.stategy.stategy.BulkStrategy;
+import org.nazymko.stategy.stategy.CardIs4Digits;
+import org.nazymko.stategy.stategy.CurrencyMoneyStrategy;
+import org.nazymko.stategy.stategy.FillGapsInDates;
+import org.nazymko.stategy.stategy.GroupByDate;
+import org.nazymko.stategy.stategy.InitialWithoutRelatedIsApprove;
+import org.nazymko.stategy.stategy.OperationTimeStrategy;
+import org.nazymko.stategy.stategy.RelatedOperationStrategy;
+import org.nazymko.stategy.stategy.RemoveZeroMoneyStrategy;
+import org.nazymko.stategy.stategy.Strategy;
+import org.nazymko.stategy.stategy.TwoMoneyRequiredFilter;
+import org.nazymko.stategy.stategy.TwoMoneysStrategy;
+import org.nazymko.stategy.utils.DateParser;
+import org.nazymko.stategy.utils.MoneyParser;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static java.time.temporal.ChronoUnit.DAYS;
 import static org.nazymko.utils.MoneyParser.format;
 
 public class Main {
@@ -45,7 +56,7 @@ public class Main {
 
         sortByTime(histories);
 
-        apply(histories, new CleanUpRegularDigits());
+        apply(histories, new org.nazymko.stategy.stategy.CleanUpRegularDigits());
         apply(histories, new CurrencyMoneyStrategy());
         apply(histories, new RemoveZeroMoneyStrategy());
         apply(histories, new TwoMoneyRequiredFilter());
@@ -64,13 +75,6 @@ public class Main {
     }
 
     private static void printAll(List<History> histories) {
-        System.out.println("Size:" + histories.size());
-        LocalDateTime start = histories.get(0).getSmsDate();
-        LocalDateTime end = histories.get(histories.size() - 1).getSmsDate();
-
-        System.out.println("Dates:" + start + " - " + end + " (" + DAYS.between(start, end) + " days between)");
-
-        System.out.println();
         System.out.println(" [\"Date\", \"Balance\",\"Income\",\"Outcome\"],");
         for (History history : histories) {
             Money balance = MoneyParser.byType(Money.Type.BALANCE, history);
@@ -80,8 +84,7 @@ public class Main {
             String operationMoneyStringNegative = operation == null ? "0.00" : Operation.OUTCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
             String operationMoneyStringPositive = operation == null ? "0.00" : Operation.INCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
 
-            System.out.println(String.format("[\"%s\",%s,%s,%s],",
-                    history.getSmsDate().format(FORMATTER), balanceMoneyString, operationMoneyStringPositive, operationMoneyStringNegative));
+            System.out.println(String.format("[\"%s\",%s,%s,%s],", history.getSmsDate().format(FORMATTER), balanceMoneyString, operationMoneyStringPositive, operationMoneyStringNegative));
         }
     }
 

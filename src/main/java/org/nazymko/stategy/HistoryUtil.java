@@ -1,7 +1,7 @@
-package org.nazymko;
+package org.nazymko.stategy;
 
-import org.nazymko.utils.MoneyParser;
-import org.nazymko.utils.ObjectsUtils;
+import org.nazymko.stategy.utils.MoneyParser;
+import org.nazymko.stategy.utils.ObjectsUtils;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -13,7 +13,7 @@ public class HistoryUtil {
      * Merge history1 and history2
      */
     public static History merge(History history1, History history2) {
-        History history = new History(history2.getSmsDate(), history1.getAllSms(), history2.getAllSms());
+        History history = new History(history2.getSms(), history2.getSmsDate());
 
 
         for (Money.Type type : Money.Type.values()) {
