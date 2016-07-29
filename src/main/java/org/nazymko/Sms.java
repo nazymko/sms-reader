@@ -9,6 +9,19 @@ import java.time.format.DateTimeFormatter;
 public class Sms {
     LocalDateTime time;
     String text;
+    String[] data;
+
+    public Sms(LocalDateTime time, String text) {
+        this.time = time;
+        this.text = text;
+        if (text != null) {
+            data = text.split(" ");
+        }
+    }
+
+    public String[] getData() {
+        return data;
+    }
 
     public LocalDateTime getTime() {
         return time;
@@ -16,11 +29,6 @@ public class Sms {
 
     public String getText() {
         return text;
-    }
-
-    public Sms(LocalDateTime time, String text) {
-        this.time = time;
-        this.text = text;
     }
 
     @Override

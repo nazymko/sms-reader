@@ -7,6 +7,7 @@ public class Money {
     private String currency;
     private Long value;
     private Type type = Type.UNKNOWN;
+    private int index;
 
     private Money() {
 
@@ -21,6 +22,14 @@ public class Money {
         this.currency = currency;
         this.value = value;
         this.type = type;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public Type getType() {
@@ -52,4 +61,34 @@ public class Money {
         BALANCE, OPERATION, UNKNOWN
     }
 
+
+    public static class Position {
+        private int fromBegin;
+        private int fromEnd;
+        private int index;
+
+        public int getFromBegin() {
+            return fromBegin;
+        }
+
+        public void setFromBegin(int fromBegin) {
+            this.fromBegin = fromBegin;
+        }
+
+        public int getFromEnd() {
+            return fromEnd;
+        }
+
+        public void setFromEnd(int fromEnd) {
+            this.fromEnd = fromEnd;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
 }

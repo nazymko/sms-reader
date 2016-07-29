@@ -25,7 +25,6 @@ public class GroupByDate implements BulkStrategy {
 
             if (DateParser.inSameDay(prev.getSmsDate(), current.getSmsDate())) {
                 History result = HistoryUtil.merge(prev, current);
-                System.out.println("Merge:\n\t" + prev + "\n\t" + current + "\nInto:\n\t" + result);
                 prev = result;
             } else {
                 mutableTarget.add(prev);

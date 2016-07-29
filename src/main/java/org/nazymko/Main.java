@@ -37,7 +37,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        read(/*"sms.log",*/ 1);
+        Class<? extends Class> aClass = Money.class.getClass();
+        System.out.println("aClass = " + aClass);
+//        read(/*"sms.log",*/ 1);
     }
 
     public static List<Change> read(/*String file,*/ int step) throws IOException {
@@ -80,7 +82,7 @@ public class Main {
             String operationMoneyStringNegative = operation == null ? "0.00" : Operation.OUTCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
             String operationMoneyStringPositive = operation == null ? "0.00" : Operation.INCOME.equals(history.getMeta().getOperation()) ? format(operation.getValue()) : "0.00";
 
-            System.out.println(String.format("[\"%s\",%s,%s,%s],",
+            System.out.println(String.format("[\"%s\",\t%s,\t%s,\t%s\t],",
                     history.getSmsDate().format(FORMATTER), balanceMoneyString, operationMoneyStringPositive, operationMoneyStringNegative));
         }
     }
